@@ -90,7 +90,7 @@
         'gen_fcitx_mozc_i18n',
       ],
       'conditions': [
-        ['use_fcitx==1', {
+        ['use_fcitx=="YES"', {
           'cflags': [
             '<!@(pkg-config --cflags <@(pkg_config_libs))',
           ],
