@@ -34,6 +34,9 @@
 #include <process.h>  // for _beginthreadex
 #else
 #include <pthread.h>
+#ifdef OS_FREEBSD
+#include <pthread_np.h>
+#endif  // OS_FREEBSD
 #endif  // OS_WIN
 
 #include <atomic>
