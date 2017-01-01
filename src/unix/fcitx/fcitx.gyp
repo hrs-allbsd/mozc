@@ -51,6 +51,8 @@
         'fcitx_defines': [
           'LOCALEDIR="<!@(fcitx4-config --prefix)/share/locale/"',
         ]
+      },{
+        'fcitx_defines': [],
       }]
     ],
   },
@@ -99,6 +101,8 @@
           'cflags': [
             '<!@(pkg-config --cflags <@(pkg_config_libs))',
           ],
+        },{
+          'cflags': [],
         }],
       ],
       'include_dirs': [
