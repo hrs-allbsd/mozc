@@ -32,7 +32,9 @@
 #include <limits>
 #include <string>
 #include <fcitx/instance.h>
+#if 0
 #include <fcitx/module/clipboard/fcitx-clipboard.h>
+#endif
 
 #include "base/port.h"
 #include "base/logging.h"
@@ -207,6 +209,7 @@ bool GetSurroundingText(FcitxInstance* instance,
     const string surrounding_text(str);
     free(str);
 
+#if 0
     if (cursor_pos == anchor_pos) {
         const char* primary = NULL;
 
@@ -220,6 +223,7 @@ bool GetSurroundingText(FcitxInstance* instance,
             }
         }
     }
+#endif
 
     if (!SurroundingTextUtil::GetSafeDelta(cursor_pos, anchor_pos,
                                            &info->relative_selected_length)) {
