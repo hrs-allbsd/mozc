@@ -868,7 +868,7 @@ def BuildWithNinja(options, targets):
   ninja = GetNinjaPath()
 
   ninja_targets = [GetNinjaTargetName(target) for target in targets]
-  RunOrDie([ninja, '-C', build_arg] + ninja_targets)
+  RunOrDie([ninja, '-v', '-C', build_arg] + ninja_targets)
 
 
 def BuildOnWindows(targets):
