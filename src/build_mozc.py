@@ -275,6 +275,11 @@ def ParseGypOptions(args):
   parser.add_option('--version_file', dest='version_file',
                     help='use the specified version template file',
                     default='data/version/mozc_version_template.bzl')
+  parser.add_option('--localbase', dest='localbase')
+  parser.add_option('--ldflags', dest='ldflags')
+  parser.add_option('--cflags', dest='cflags')
+  parser.add_option('--cflags_cc', dest='cflags_cc')
+  parser.add_option('--include_dirs', dest='include_dirs')
   AddTargetPlatformOption(parser)
 
   # Mac and Linux
@@ -287,6 +292,14 @@ def ParseGypOptions(args):
   parser.add_option('--server_dir', dest='server_dir',
                     default='',
                     help='A path to the directory where the server executable'
+                    'is installed. This option is used only on Linux.')
+  parser.add_option('--renderer_dir', dest='renderer_dir',
+                    default='',
+                    help='A path to the directory where the renderer executable'
+                    'is installed. This option is used only on Linux.')
+  parser.add_option('--tool_dir', dest='tool_dir',
+                    default='',
+                    help='A path to the directory where the tool executable'
                     'is installed. This option is used only on Linux.')
 
   # Android
@@ -428,6 +441,11 @@ def ParseBuildOptions(args):
   """Parses command line options for the build command."""
   parser = optparse.OptionParser(usage='Usage: %prog build [options]')
   AddCommonOptions(parser)
+  if IsLinux():
+    default_build_concurrency = 1;
+    parser.add_option('--jobs', '-j', dest='jobs',
+                      default=('%d' % default_build_concurrency),
+                      metavar='N', help='run build jobs in parallel')
   parser.add_option('--configuration', '-c', dest='configuration',
                     default='Debug', help='specify the build configuration.')
 
@@ -570,6 +588,18 @@ def GypMain(options, unused_args):
     gyp_options.extend(['--include=%s/gyp/common_win.gypi' % SRC_DIR])
   else:
     gyp_options.extend(['--include=%s/gyp/common.gypi' % SRC_DIR])
+
+  localbase = options.localbase or '/usr'
+  gyp_options.extend(['-D', 'localbase=%s' % localbase])
+
+  ldflags = options.ldflags or ''
+  gyp_options.extend(['-D', 'ldflags=%s' % ldflags])
+  cflags = options.cflags or ''
+  gyp_options.extend(['-D', 'cflags=%s' % cflags])
+  cflags_cc = options.cflags_cc or ''
+  gyp_options.extend(['-D', 'cflags_cc=%s' % cflags_cc])
+  include_dirs = options.include_dirs or ''
+  gyp_options.extend(['-D', 'include_dirs=%s' % include_dirs])
 
   gyp_options.extend(['-D', 'abs_depth=%s' % MOZC_ROOT])
   gyp_options.extend(['-D', 'ext_third_party_dir=%s' % EXT_THIRD_PARTY_DIR])
@@ -721,6 +751,12 @@ def GypMain(options, unused_args):
   if options.server_dir:
     gyp_options.extend([
         '-D', 'server_dir=%s' % os.path.abspath(options.server_dir)])
+  if options.tool_dir:
+    gyp_options.extend([
+        '-D', 'tool_dir=%s' % os.path.abspath(options.tool_dir)])
+  if options.renderer_dir:
+    gyp_options.extend([
+        '-D', 'renderer_dir=%s' % os.path.abspath(options.renderer_dir)])
 
   gyp_options.extend(['--generator-output=.'])
   short_basename = GetBuildShortBaseName(target_platform)
