@@ -44,6 +44,9 @@
 #include <map>
 #include <string>
 #include <vector>
+#if defined(__GNUC__) && !defined(__clang__)
+#include <cstdlib>
+#endif
 
 #include "base/compiler_specific.h"
 #include "base/logging.h"
