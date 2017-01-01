@@ -146,6 +146,16 @@
             'MOZC_SERVER_DIRECTORY="<(server_dir)"',
           ],
         }],
+        ['target_platform=="Linux" and tool_dir!=""', {
+          'defines': [
+            'MOZC_TOOL_DIRECTORY="<(tool_dir)"',
+          ],
+        }],
+        ['target_platform=="Linux" and renderer_dir!=""', {
+          'defines': [
+            'MOZC_RENDERER_DIRECTORY="<(renderer_dir)"',
+          ],
+        }],
         ['target_platform=="Linux" and document_dir!=""', {
           'defines': [
             'MOZC_DOCUMENT_DIRECTORY="<(document_dir)"',
