@@ -286,7 +286,7 @@ bool IPCPathManager::GetPathName(string *ipc_name) const {
   *ipc_name = kIPCPrefix;
 #endif  // OS_WIN
 
-#ifdef OS_LINUX
+#if defined(OS_LINUX) && !defined(OS_FREEBSD)
   // On Linux, use abstract namespace which is independent of the file system.
   (*ipc_name)[0] = '\0';
 #endif
