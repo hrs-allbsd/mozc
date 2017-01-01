@@ -110,7 +110,11 @@ AboutDialog::AboutDialog(QWidget *parent)
   SetLabelText(label_terms);
   SetLabelText(label_credits);
 
+#ifdef OS_FREEBSD
+  product_image_.reset(new QImage(LOCALBASE "/share/mozc-tool/icons/product_logo.png"));
+#else
   product_image_.reset(new QImage(":/product_logo.png"));
+#endif
 }
 
 void AboutDialog::paintEvent(QPaintEvent *event) {

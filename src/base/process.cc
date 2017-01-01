@@ -97,7 +97,7 @@ bool Process::OpenBrowser(const string &url) {
 #endif
 
 #if defined(OS_LINUX) || defined(OS_ANDROID) || defined(OS_NACL)
-  static const char kBrowserCommand[] = "/usr/bin/xdg-open";
+  static const char kBrowserCommand[] = LOCALBASE "/bin/xdg-open";
   // xdg-open which uses kfmclient or gnome-open internally works both on KDE
   // and GNOME environments.
   return SpawnProcess(kBrowserCommand, url);
