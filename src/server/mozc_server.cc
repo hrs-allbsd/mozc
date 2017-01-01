@@ -32,6 +32,9 @@
 #ifdef OS_WIN
 #include <windows.h>
 #endif
+#ifdef OS_FREEBSD
+#include <signal.h>
+#endif
 
 #include <cstddef>
 #include <memory>
@@ -54,6 +57,23 @@ DECLARE_bool(restricted);   // in SessionHandler
 namespace {
 mozc::SessionServer *g_session_server = NULL;
 }
+
+#ifdef OS_FREEBSD
+static void sig_func(int num)
+{
+  VLOG(1) << "signal " << num << " recieved.";
+  switch (num) {
+  case SIGINT:
+  case SIGHUP:
+  case SIGTERM:
+    if (g_session_server)
+      g_session_server->Terminate();
+    break;
+  default:
+    break;
+  }
+}
+#endif
 
 namespace mozc {
 namespace server {
@@ -115,6 +135,12 @@ int MozcServer::Run() {
       LOG(ERROR) << "SessionServer initialization failed";
       return -1;
     }
+
+#ifdef OS_FREEBSD
+    ::signal(SIGINT, sig_func);
+    ::signal(SIGHUP, sig_func);
+    ::signal(SIGTERM, sig_func);
+#endif
 
 #if defined(OS_WIN)
     // On Windows, ShutdownSessionCallback is not called intentionally in order
