@@ -83,6 +83,8 @@
             './gen_mozc_xml.py',
             '--branding=Mozc',
             '--server_dir=<(server_dir)',
+	    '--renderer_dir=<(renderer_dir)',
+	    '--tool_dir=<(tool_dir)',
             '--ibus_mozc_path=<(ibus_mozc_path)',
             '--ibus_mozc_icon_path=<(ibus_mozc_icon_path)',
           ],
