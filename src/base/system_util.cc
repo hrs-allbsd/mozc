@@ -396,7 +396,11 @@ string SystemUtil::GetRendererPath() {
   if (server_path.empty()) {
     return "";
   }
+#ifdef MOZC_RENDERER_DIRECTORY
+  return FileUtil::JoinPath(MOZC_RENDERER_DIRECTORY "/", kMozcRenderer);
+#else
   return FileUtil::JoinPath(server_path, kMozcRenderer);
+#endif
 }
 
 string SystemUtil::GetToolPath() {
@@ -405,7 +409,11 @@ string SystemUtil::GetToolPath() {
   if (server_path.empty()) {
     return "";
   }
+#ifdef MOZC_TOOL_DIRECTORY
+  return FileUtil::JoinPath(MOZC_TOOL_DIRECTORY "/", kMozcTool);
+#else
   return FileUtil::JoinPath(server_path, kMozcTool);
+#endif
 }
 
 string SystemUtil::GetDocumentDirectory() {
