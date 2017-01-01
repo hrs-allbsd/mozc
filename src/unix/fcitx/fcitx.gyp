@@ -94,6 +94,8 @@
           'cflags': [
             '<!@(pkg-config --cflags <@(pkg_config_libs))',
           ],
+        },{
+          'cflags': [],
         }],
       ],
       'include_dirs': [
