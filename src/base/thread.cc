@@ -147,9 +147,11 @@ void Thread::Start(const string &thread_name) {
     // NaCl doesn't support setname.
 #elif defined(OS_MACOSX)
     pthread_setname_np(thread_name.c_str());
-#else  // !(OS_NACL | OS_MACOSX)
+#elif defined(OS_FREEBSD)
+    pthread_set_name_np(*state_->handle_, thread_name.c_str());
+#else  // !(OS_NACL | OS_MACOSX | OS_FREEBSD)
     pthread_setname_np(*state_->handle, thread_name.c_str());
-#endif  // !(OS_NACL | OS_MACOSX)
+#endif  // !(OS_NACL | OS_MACOSX | OS_FREEBSD)
   }
 }
 
