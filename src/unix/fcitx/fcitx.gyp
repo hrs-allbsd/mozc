@@ -89,8 +89,12 @@
         '<@(fcitx_dependencies)',
         'gen_fcitx_mozc_i18n',
       ],
-      'cflags': [
-        '<!@(pkg-config --cflags <@(pkg_config_libs))',
+      'conditions': [
+        ['use_fcitx==1', {
+          'cflags': [
+            '<!@(pkg-config --cflags <@(pkg_config_libs))',
+          ],
+        }],
       ],
       'include_dirs': [
         '<@(fcitx_dep_include_dirs)',
