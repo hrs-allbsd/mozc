@@ -182,7 +182,9 @@ INPUT_RETURN_VALUE FcitxMozcDoInput(void* arg, FcitxKeySym _sym, unsigned int _s
             // clear candidate table
             FcitxCandidateWordReset(candList);
             FcitxCandidateWordSetPageSize(candList, 9);
+#if 0
             FcitxCandidateWordSetLayoutHint(candList, CLH_Vertical);
+#endif
             FcitxCandidateWordSetChoose(candList, "\0\0\0\0\0\0\0\0\0\0");
             FcitxMessagesAddMessageAtLast(preedit, MSG_TIPS, "%s [%s]", usage.first.c_str(), _("Press Escape to go back"));
 
