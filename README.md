@@ -21,4 +21,4 @@ Changes include:
 
 These patches are maintained by Hiroki Sato <hrs@FreeBSD.org>.
 
-The original README can be found at ###[README_orig.md]
+The original README can be found at [README_orig.md](README_orig.md)
