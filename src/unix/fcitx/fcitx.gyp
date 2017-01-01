@@ -46,9 +46,13 @@
         '../../session/session_base.gyp:ime_switch_util',
         '../../protocol/protocol.gyp:commands_proto',
     ],
-    'fcitx_defines': [
-      'LOCALEDIR="<!@(fcitx4-config --prefix)/share/locale/"',
-    ]
+    'conditions': [
+      ['use_fcitx==1', {
+        'fcitx_defines': [
+          'LOCALEDIR="<!@(fcitx4-config --prefix)/share/locale/"',
+        ]
+      }]
+    ],
   },
   'targets': [
     {
@@ -90,8 +94,12 @@
         '<@(fcitx_dependencies)',
         'gen_fcitx_mozc_i18n',
       ],
-      'cflags': [
-        '<!@(pkg-config --cflags <@(pkg_config_libs))',
+      'conditions': [
+        ['use_fcitx==1', {
+          'cflags': [
+            '<!@(pkg-config --cflags <@(pkg_config_libs))',
+          ],
+        }],
       ],
       'include_dirs': [
         '<@(fcitx_dep_include_dirs)',

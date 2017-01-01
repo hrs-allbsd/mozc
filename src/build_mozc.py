@@ -280,6 +280,8 @@ def ParseGypOptions(args):
   parser.add_option('--cflags', dest='cflags')
   parser.add_option('--cflags_cc', dest='cflags_cc')
   parser.add_option('--include_dirs', dest='include_dirs')
+  parser.add_option('--use_fcitx', action='store_true', dest='use_fcitx',
+		    default=False)
   AddTargetPlatformOption(parser)
 
   # Mac and Linux
@@ -637,8 +639,10 @@ def GypMain(options, unused_args):
   else:
     gyp_options.extend(['-D', 'use_wix=NO'])
 
-  if target_platform == 'Linux':
-    gyp_options.extend(['-D', 'enable_gtk_renderer=1'])
+  if options.use_fcitx:
+    gyp_options.extend(['-D', 'use_fcitx=1'])
+  else:
+    gyp_options.extend(['-D', 'use_fcitx=0'])
 
   # Android
   if target_platform == 'Android':

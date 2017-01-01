@@ -71,6 +71,9 @@
     # use_libibus represents if ibus library is used or not.
     # This option is only for Linux.
     'use_libibus%': '0',
+
+    # use_fcitx enables build of unix/fcitx.
+    'use_fcitx%': '0',
   },
   'target_defaults': {
     'defines': [
