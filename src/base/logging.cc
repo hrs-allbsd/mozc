@@ -106,8 +106,6 @@ string Logging::GetLogMessageHeader() {
            "%p",
 #elif defined(OS_LINUX)
            "%lu",
-#elif defined(OS_FREEBSD)
-           "%p",
 #elif defined(OS_MACOSX) && defined(__LP64__)
            "%llu",
 #else  // OS_WIN or OS_MACOSX(32bit)
