@@ -107,7 +107,7 @@
     ],
     # Libraries for GNU/Linux environment.
     'linux_ldflags': [
-      '-pthread',
+      '-lpthread',
     ],
 
     'conditions': [
@@ -130,9 +130,9 @@
         'compiler_host_version_int': 304,  # Clang 3.4 or higher
       }],
       ['target_platform=="Linux"', {
-        'compiler_target': 'clang',
+        'compiler_target': '<(compiler_target)',
         'compiler_target_version_int': 304,  # Clang 3.4 or higher
-        'compiler_host': 'clang',
+        'compiler_host': '<(compiler_host)',
         'compiler_host_version_int': 304,  # Clang 3.4 or higher
       }],
     ],
@@ -159,7 +159,7 @@
           'OTHER_CFLAGS': [ '<@(debug_extra_cflags)', ],
         },
         'conditions': [
-          ['OS=="linux"', {
+          ['OS=="linux" or OS=="freebsd"', {
             'cflags': [
               '<@(debug_extra_cflags)',
             ],
@@ -194,7 +194,7 @@
           'OTHER_CFLAGS': [ '<@(release_extra_cflags)', ],
         },
         'conditions': [
-          ['OS=="linux"', {
+          ['OS=="linux" or OS=="freebsd"', {
             'cflags': [
               '<@(release_extra_cflags)',
             ],
@@ -219,17 +219,20 @@
           ['compiler_target=="clang"', {
             'cflags': [
               '-Wtype-limits',
+              '<@(cflags)',
             ],
             'cflags_cc': [
               '-Wno-covered-switch-default',
               '-Wno-unnamed-type-template-args',
               '-Wno-c++11-narrowing',
-              '-std=gnu++0x',
+              '-std=c++11',
+              '<@(cflags_cc)',
             ],
           }],
-          ['compiler_target=="clang" or compiler_target=="gcc"', {
+          ['compiler_target=="gcc"', {
             'cflags_cc': [
-              '-std=gnu++0x',
+              '-std=gnu++11',
+              '<@(cflags_cc)',
             ],
           }],
         ],
@@ -239,41 +242,54 @@
           ['compiler_host=="clang"', {
             'cflags': [
               '-Wtype-limits',
+              '<@(cflags)',
             ],
             'cflags_cc': [
               '-Wno-covered-switch-default',
               '-Wno-unnamed-type-template-args',
               '-Wno-c++11-narrowing',
-              '-std=gnu++0x',
+              '-std=c++11',
+              '<@(cflags_cc)',
             ],
           }],
-          ['compiler_host=="clang" or compiler_host=="gcc"', {
+          ['compiler_host=="gcc"', {
             'cflags_cc': [
-              '-std=gnu++0x',
+              '-std=gnu++11',
+              '<@(cflags_cc)',
             ],
           }],
         ],
       }],
     ],
     'conditions': [
-      ['OS=="linux"', {
+      ['OS=="linux" or OS=="freebsd"', {
         'ldflags': [
           '<@(linux_ldflags)',
+          '-fstack-protector',
         ],
         'cflags': [
           '<@(warning_cflags)',
           '-fPIC',
           '-fno-exceptions',
+          '<@(cflags)',
         ],
         'cflags_cc': [
           # We use deprecated <hash_map> and <hash_set> instead of upcoming
           # <unordered_map> and <unordered_set>.
           '-Wno-deprecated',
+          '<@(cflags_cc)',
         ],
+	'include_dirs': [
+	  '<@(include_dirs)',
+	],
         'conditions': [
-          ['target_platform=="Linux"', {
+          ['target_platform=="Linux" or target_platform=="freebsd"', {
             # OS_LINUX is defined always (target and host).
-            'defines': ['OS_LINUX',],
+            'defines': [
+		'OS_LINUX',
+		'OS_FREEBSD',
+		'LOCALBASE="<@(localbase)"',
+		],
           }],
           ['target_platform=="Android"', {
             'defines': ['NO_USAGE_REWRITER'],
