@@ -54,7 +54,7 @@ struct Flag {
 
 namespace {
 
-typedef map<string, mozc_flags::Flag *> FlagMap;
+typedef std::map<string, mozc_flags::Flag *> FlagMap;
 
 FlagMap *GetFlagMap() {
   return mozc::Singleton<FlagMap>::get();
@@ -190,7 +190,7 @@ FlagRegister::~FlagRegister() {
 }
 
 bool SetFlag(const string &name, const string &value) {
-  map<string, Flag *>::iterator it = GetFlagMap()->find(name);
+  std::map<string, Flag *>::iterator it = GetFlagMap()->find(name);
   if (it == GetFlagMap()->end()) return false;
   string v = value;
   Flag *flag = it->second;
@@ -241,7 +241,7 @@ namespace {
 
 void PrintFlags(string *output) {
   std::ostringstream os;
-  for (map<string, Flag *>::const_iterator it = GetFlagMap()->begin();
+  for (std::map<string, Flag *>::const_iterator it = GetFlagMap()->begin();
        it != GetFlagMap()->end(); ++it) {
     os << "   --" << it->first << " (" << it->second->help << ")";
     const Flag *flag = it->second;
