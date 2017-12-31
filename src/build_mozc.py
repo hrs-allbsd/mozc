@@ -640,9 +640,9 @@ def GypMain(options, unused_args):
     gyp_options.extend(['-D', 'use_wix=NO'])
 
   if options.use_fcitx:
-    gyp_options.extend(['-D', 'use_fcitx=1'])
+    gyp_options.extend(['-D', 'use_fcitx=YES'])
   else:
-    gyp_options.extend(['-D', 'use_fcitx=0'])
+    gyp_options.extend(['-D', 'use_fcitx=NO'])
 
   # Android
   if target_platform == 'Android':
