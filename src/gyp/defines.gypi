@@ -74,6 +74,9 @@
 
     # use_fcitx enables build of unix/fcitx.
     'use_fcitx%': '0',
+
+    # use_fcitx5 enables build of unix/fcitx5.
+    'use_fcitx5%': '0',
   },
   'target_defaults': {
     'defines': [
