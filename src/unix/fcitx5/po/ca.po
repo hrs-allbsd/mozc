@@ -1,0 +1,160 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the fcitx5-mozc package.
+#
+# Translators:
+# Robert Antoni Buj Gelonch <rbuj@fedoraproject.org>, 2017
+# csslayer <wengxt@gmail.com>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: fcitx5-mozc\n"
+"Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
+"POT-Creation-Date: 2017-12-20 00:01-0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: csslayer <wengxt@gmail.com>, 2017\n"
+"Language-Team: Catalan (https://www.transifex.com/fcitx/teams/12005/ca/)\n"
+"Language: ca\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: mozc_engine.cc:174
+msgid "Character Palette"
+msgstr "Paleta de caràcters"
+
+#: mozc_engine.cc:78
+msgid "Composition Mode"
+msgstr "Mode de composició"
+
+#: mozc_engine.cc:153
+msgid "Configuration Tool"
+msgstr "Eina de configuració"
+
+#: mozc_engine.cc:160
+msgid "Dictionary Tool"
+msgstr "Eina de diccionari"
+
+#: mozc_state.cc:61 mozc_engine.cc:45
+msgid "Direct"
+msgstr "Directe"
+
+#. Full width ASCII letter A.
+#: mozc_state.cc:80 mozc_engine.cc:67
+msgid "Full ASCII"
+msgstr "ASCII complet"
+
+#. Katakana letter A.
+#: mozc_state.cc:71 mozc_engine.cc:56
+msgid "Full Katakana"
+msgstr "Katakana complet"
+
+#: mozc_state.cc:74 mozc_engine.cc:60
+msgid "Half ASCII"
+msgstr "ASCII mig"
+
+#. Half width Katakana letter A.
+#: mozc_state.cc:85 mozc_engine.cc:72
+msgid "Half Katakana"
+msgstr "Mig katakana"
+
+#: mozc_engine.cc:167
+msgid "Hand Writing"
+msgstr "Escriptura a mà"
+
+#. Hiragana letter A in UTF-8.
+#: mozc_state.cc:66 mozc_engine.cc:51
+msgid "Hiragana"
+msgstr "Hiragana"
+
+#: mozc_response_parser.cc:144
+msgid "Press Ctrl+Alt+H to show usages."
+msgstr "Premeu Ctrl+Alt+H per mostrar els usos."
+
+#: mozc_state.cc:426
+msgid "Press Escape to go back"
+msgstr "Premeu Esc per tornar"
+
+#: mozc_engine.cc:137 mozc_engine.cc:138
+msgid "Tool"
+msgstr "Eina"
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the fcitx5-mozc package.
+#
+# Translators:
+# Robert Antoni Buj Gelonch <rbuj@fedoraproject.org>, 2017
+# csslayer <wengxt@gmail.com>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: fcitx5-mozc\n"
+"Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
+"POT-Creation-Date: 2017-12-20 00:01-0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: csslayer <wengxt@gmail.com>, 2017\n"
+"Language-Team: Catalan (https://www.transifex.com/fcitx/teams/12005/ca/)\n"
+"Language: ca\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: mozc_engine.cc:174
+msgid "Character Palette"
+msgstr "Paleta de caràcters"
+
+#: mozc_engine.cc:78
+msgid "Composition Mode"
+msgstr "Mode de composició"
+
+#: mozc_engine.cc:153
+msgid "Configuration Tool"
+msgstr "Eina de configuració"
+
+#: mozc_engine.cc:160
+msgid "Dictionary Tool"
+msgstr "Eina de diccionari"
+
+#: mozc_state.cc:61 mozc_engine.cc:45
+msgid "Direct"
+msgstr "Directe"
+
+#. Full width ASCII letter A.
+#: mozc_state.cc:80 mozc_engine.cc:67
+msgid "Full ASCII"
+msgstr "ASCII complet"
+
+#. Katakana letter A.
+#: mozc_state.cc:71 mozc_engine.cc:56
+msgid "Full Katakana"
+msgstr "Katakana complet"
+
+#: mozc_state.cc:74 mozc_engine.cc:60
+msgid "Half ASCII"
+msgstr "ASCII mig"
+
+#. Half width Katakana letter A.
+#: mozc_state.cc:85 mozc_engine.cc:72
+msgid "Half Katakana"
+msgstr "Mig katakana"
+
+#: mozc_engine.cc:167
+msgid "Hand Writing"
+msgstr "Escriptura a mà"
+
+#. Hiragana letter A in UTF-8.
+#: mozc_state.cc:66 mozc_engine.cc:51
+msgid "Hiragana"
+msgstr "Hiragana"
+
+#: mozc_response_parser.cc:144
+msgid "Press Ctrl+Alt+H to show usages."
+msgstr "Premeu Ctrl+Alt+H per mostrar els usos."
+
+#: mozc_state.cc:426
+msgid "Press Escape to go back"
+msgstr "Premeu Esc per tornar"
+
+#: mozc_engine.cc:137 mozc_engine.cc:138
+msgid "Tool"
+msgstr "Eina"
