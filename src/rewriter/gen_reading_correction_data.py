@@ -63,7 +63,7 @@ def ParseOptions():
 def WriteData(input_path, output_value_array_path, output_error_array_path,
               output_correction_array_path):
   outputs = []
-  with open(input_path) as input_stream:
+  with open(input_path, 'rb') as input_stream:
     input_stream = code_generator_util.SkipLineComment(input_stream)
     input_stream = code_generator_util.ParseColumnStream(input_stream,
                                                          num_column=3)
@@ -73,7 +73,7 @@ def WriteData(input_path, output_value_array_path, output_error_array_path,
 
   # In order to lookup the entries via |error| with binary search,
   # sort outputs here.
-  outputs.sort(lambda x, y: cmp(x[1], y[1]) or cmp(x[0], y[0]))
+  outputs.sort(key=lambda x: (x[1], x[0]))
 
   serialized_string_array_builder.SerializeToFile(
       [value for (value, _, _) in outputs], output_value_array_path)

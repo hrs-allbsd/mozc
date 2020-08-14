@@ -36,9 +36,9 @@ store as python object.
 
 __author__ = "nona"
 
-import cStringIO as StringIO
+import io
 import logging
-from xml.etree import cElementTree as ElementTree
+from xml.etree import ElementTree
 
 
 class Failure(object):
@@ -87,13 +87,13 @@ class TestSuite(object):
     """Returns summarized error report text."""
     if self.fail_num == 0:
       return ''
-    output = StringIO.StringIO()
+    output = io.StringIO()
     for testcase in self.testcases:
       if not testcase.failures:
         continue
-      print >>output, '%s.%s:' % (self.name, testcase.name)
+      print('%s.%s:' % (self.name, testcase.name), file=output)
       for failure in testcase.failures:
-        print >>output, failure.contents.encode('utf-8')
+        print(failure.contents.encode('utf-8'), file=output)
     return output.getvalue()
 
   @classmethod

@@ -94,7 +94,7 @@ def _GetRevisionForPlatform(revision, target_platform):
   last_digit = TARGET_PLATFORM_TO_DIGIT.get(target_platform, None)
   if last_digit is None:
     logging.critical('target_platform %s is invalid. Accetable ones are %s',
-                     target_platform, TARGET_PLATFORM_TO_DIGIT.keys())
+                     target_platform, list(TARGET_PLATFORM_TO_DIGIT.keys()))
     sys.exit(1)
 
   if not revision:
@@ -314,13 +314,14 @@ class MozcVersion(object):
     self._properties = {}
     if not os.path.isfile(path):
       return
-    for line in open(path):
-      matchobj = re.match(r'(\w+)=(.*)', line.strip())
-      if matchobj:
-        var = matchobj.group(1)
-        val = matchobj.group(2)
-        if var not in self._properties:
-          self._properties[var] = val
+    with open(path) as file:
+      for line in file:
+        matchobj = re.match(r'(\w+)=(.*)', line.strip())
+        if matchobj:
+          var = matchobj.group(1)
+          val = matchobj.group(2)
+          if var not in self._properties:
+            self._properties[var] = val
 
     # Check mandatory properties.
     for key in VERSION_PROPERTIES:

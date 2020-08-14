@@ -52,10 +52,10 @@ def main():
   opts = _ParseOptions()
 
   result = []
-  with open(opts.input, 'r') as stream:
+  with open(opts.input, 'rb') as stream:
     for line in stream:
-      line = line.rstrip('\r\n')
-      fields = line.split('\t')
+      line = line.rstrip(b'\r\n')
+      fields = line.split(b'\t')
       key = fields[0]
       lid = int(fields[1])
       rid = int(fields[2])
@@ -63,7 +63,7 @@ def main():
       value = fields[4]
 
       if key == value:
-        value = ''
+        value = b''
 
       result.append((key, value, lid, rid, cost))
 

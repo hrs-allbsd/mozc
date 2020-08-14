@@ -50,24 +50,26 @@ def escape_string(s):
   """
   result = ''
   for c in s:
-    hexstr = hex(ord(c))
+    hexstr = hex(c)
     # because hexstr contains '0x', remove the prefix and add our prefix
     result += '\\x' + hexstr[2:]
   return result
 
 def GenerateHeader(file):
   try:
-    print "const char *kTestSentences[] = {"
-    for line in open(file, "r"):
-      if line.startswith('#'):
+    print("const char *kTestSentences[] = {")
+    fh = open(file, "rb")
+    for line in fh:
+      if line.startswith(b'#'):
         continue
-      line = line.rstrip('\r\n')
+      line = line.rstrip(b'\r\n')
       if not line:
         continue
-      print " \"%s\"," % escape_string(line)
-    print "};"
+      print(" \"%s\"," % escape_string(line))
+    fh.close()
+    print("};")
   except:
-    print "cannot open %s" % (file)
+    print("cannot open %s" % (file))
     sys.exit(1)
 
 def main():

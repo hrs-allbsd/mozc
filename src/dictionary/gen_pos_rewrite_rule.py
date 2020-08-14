@@ -46,29 +46,34 @@ def IsPrefix(str, key):
 
 
 def LoadRewriteMapRule(filename):
-  fh = open(filename)
+  fh = open(filename, 'rb')
   rule = []
   for line in fh:
-    line = line.rstrip('\n')
-    if not line or line.startswith('#'):
+    line = line.rstrip(b'\n')
+    if not line or line.startswith(b'#'):
       continue
     fields = line.split()
     rule.append([fields[0], fields[1]])
+  fh.close()
   return rule
 
 
 def ReadPOSID(id_file, special_pos_file):
   pos_list = []
 
-  for line in open(id_file, 'r'):
+  fh = open(id_file, 'rb')
+  for line in fh:
     fields = line.split()
     pos_list.append(fields[1])
+  fh.close()
 
-  for line in open(special_pos_file, 'r'):
-    if len(line) <= 1 or line[0] == '#':
+  fh = open(special_pos_file, 'rb')
+  for line in fh:
+    if len(line) <= 1 or line[0:1] == b'#':
       continue
     fields = line.split()
     pos_list.append(fields[0])
+  fh.close()
 
   return pos_list
 
@@ -112,7 +117,7 @@ def main():
     ids.append(id)
 
   with open(opts.output, 'wb') as f:
-    f.write(''.join(chr(id) for id in ids))
+    f.write(''.join(chr(id) for id in ids).encode('utf-8'))
 
 
 if __name__ == '__main__':

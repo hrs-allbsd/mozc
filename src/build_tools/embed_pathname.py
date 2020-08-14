@@ -28,7 +28,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-"""A script to embed the given (relative) path name to C/C++ characters array.
+r"""A script to embed the given (relative) path name to C/C++ characters array.
 
 Example:
   ./embed_pathname.py --path_to_be_embedded=d:\data\mozc
@@ -53,7 +53,7 @@ def ParseOption():
 
   (options, unused_args) = parser.parse_args()
   if not all(vars(options).values()):
-    print parser.print_help()
+    print(parser.print_help())
     sys.exit(1)
 
   return options
@@ -63,7 +63,7 @@ def main():
   opt = ParseOption()
   path = os.path.abspath(opt.path_to_be_embedded)
   # TODO(yukawa): Consider the case of non-ASCII characters.
-  escaped_path = path.encode('string-escape')
+  escaped_path = path.replace('\\', '\\\\')
   with open(opt.output, 'w') as output_file:
     output_file.write(
         'const char %s[] = "%s";\n' % (opt.constant_name, escaped_path))

@@ -31,35 +31,34 @@
 __author__ = "taku"
 
 import re
-import string
 import sys
 rs = {}
 
 def Escape(n):
-  if n is not "NULL":
+  if n != "NULL":
     return "\"%s\"" % (n)
   else:
     return "NULL"
 
 def GetCode(n):
-  if n is not "NULL":
-    n = string.replace(n, '0-', 'JIS X 0208: 0x')
-    n = string.replace(n, '1-', 'JIS X 0212: 0x')
-    n = string.replace(n, '3-', 'JIS X 0213: 0x')
-    n = string.replace(n, '4-', 'JIS X 0213: 0x')
-    n = string.replace(n, 'A-', 'Vendors Ideographs: 0x')
-    n = string.replace(n, '3A', 'JIS X 0213 2000: 0x')
+  if n != "NULL":
+    n = n.replace('0-', 'JIS X 0208: 0x')
+    n = n.replace('1-', 'JIS X 0212: 0x')
+    n = n.replace('3-', 'JIS X 0213: 0x')
+    n = n.replace('4-', 'JIS X 0213: 0x')
+    n = n.replace('A-', 'Vendors Ideographs: 0x')
+    n = n.replace('3A', 'JIS X 0213 2000: 0x')
     return "\"%s\"" % n
   else:
     return "NULL"
 
 def GetRadical(n):
   pat = re.compile(r'^(\d+)\.')
-  if n is not "NULL":
+  if n != "NULL":
     m = pat.match(n)
     if m:
       result = rs[m.group(1)]
-      return  "\"%s\"" % (result.encode('string_escape'))
+      return "\"%s\"" % result
     else:
       return "NULL"
   else:
@@ -73,6 +72,7 @@ def main():
     id = array[1]
     radical = array[2]
     rs[id] = radical
+  fh.close()
 
   dic = {}
   pat = re.compile(r'^U\+(\S+)\s+(kTotalStrokes|kJapaneseKun|kJapaneseOn|kRSUnicode|kIRG_JSource)\t(.+)')
@@ -86,23 +86,24 @@ def main():
       n = int(m.group(1), 16)
       if n <= 65536:
         dic.setdefault(key, {}).setdefault(field, value)
+  fh.close()
 
   keys = sorted(dic.keys())
 
-  print "struct UnihanData {";
-  print "  unsigned int ucs4;";
+  print("struct UnihanData {");
+  print("  unsigned int ucs4;");
 # Since the total strokes defined in Unihan data is Chinese-based
 # number, we can't use it.
 #  print "  unsigned char total_strokes;";
-  print "  const char *japanese_kun;";
-  print "  const char *japanese_on;";
+  print("  const char *japanese_kun;");
+  print("  const char *japanese_on;");
 # Since the radical information defined in Unihan data is Chinese-based
 # number, we can't use it.
 #  print "  const char *radical;";
-  print "  const char *IRG_jsource;";
-  print "};"
-  print "static const size_t kUnihanDataSize = %d;" % (len(keys))
-  print "static const UnihanData kUnihanData[] = {"
+  print("  const char *IRG_jsource;");
+  print("};")
+  print("static const size_t kUnihanDataSize = %d;" % (len(keys)))
+  print("static const UnihanData kUnihanData[] = {")
 
   for key in keys:
     total_strokes = dic[key].get("kTotalStrokes", "0")
@@ -111,9 +112,9 @@ def main():
     rad = GetRadical(dic[key].get("kRSUnicode", "NULL"))
     code = GetCode(dic[key].get("kIRG_JSource", "NULL"))
 #    print " { 0x%s, %s, %s, %s, %s, %s }," % (key, total_strokes, kun, on, rad, code)
-    print " { 0x%s, %s, %s, %s }," % (key, kun, on, code)
+    print(" { 0x%s, %s, %s, %s }," % (key, kun, on, code))
 
-  print "};"
+  print("};")
 
 if __name__ == "__main__":
   main()

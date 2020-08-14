@@ -70,12 +70,12 @@ def CheckFileSize(filename):
   actual_size = os.stat(filename).st_size
   expected_size = EXPECTED_MAXIMUM_SIZES[basename]
   if actual_size < expected_size * 1024 * 1024:
-    print 'Pass: %s (size: %d) is smaller than expected (%d MB)' % (
-        filename, actual_size, expected_size)
+    print('Pass: %s (size: %d) is smaller than expected (%d MB)' % (
+        filename, actual_size, expected_size))
     return True
   else:
-    print 'WARNING: %s (size: %d) is larger than expected (%d MB)' % (
-        filename, actual_size, expected_size)
+    print('WARNING: %s (size: %d) is larger than expected (%d MB)' % (
+        filename, actual_size, expected_size))
     return False
 
 

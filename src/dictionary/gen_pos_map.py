@@ -39,7 +39,7 @@ import sys
 from build_tools import code_generator_util
 
 
-HEADER = """// Copyright 2009 Google Inc. All Rights Reserved.
+HEADER = b"""// Copyright 2009 Google Inc. All Rights Reserved.
 // Author: keni
 
 #ifndef MOZC_DICTIONARY_POS_MAP_H_
@@ -48,13 +48,13 @@ HEADER = """// Copyright 2009 Google Inc. All Rights Reserved.
 // POS conversion rules
 const POSMap kPOSMap[] = {
 """
-FOOTER = """};
+FOOTER = b"""};
 
 #endif  // MOZC_DICTIONARY_POS_MAP_H_
 """
 
 def ParseUserPos(user_pos_file):
-  with open(user_pos_file, 'r') as stream:
+  with open(user_pos_file, 'rb') as stream:
     stream = code_generator_util.SkipLineComment(stream)
     stream = code_generator_util.ParseColumnStream(stream, num_column=2)
     return dict((key, enum_value) for key, enum_value in stream)
@@ -64,7 +64,7 @@ def GeneratePosMap(third_party_pos_map_file, user_pos_file):
   user_pos_map = ParseUserPos(user_pos_file)
 
   result = {}
-  with open(third_party_pos_map_file, 'r') as stream:
+  with open(third_party_pos_map_file, 'rb') as stream:
     stream = code_generator_util.SkipLineComment(stream)
     for columns in code_generator_util.ParseColumnStream(stream, num_column=2):
       third_party_pos_name, mozc_pos = (columns + [None])[:2]
@@ -78,7 +78,7 @@ def GeneratePosMap(third_party_pos_map_file, user_pos_file):
       result[third_party_pos_name] = mozc_pos
 
   # Create mozc_pos to mozc_pos map.
-  for key, value in user_pos_map.iteritems():
+  for key, value in user_pos_map.items():
     if key in result:
       assert (result[key] == value)
       continue
@@ -94,10 +94,10 @@ def OutputPosMap(pos_map, output):
     if value is None:
       # Invalid PosType.
       value = (
-          'static_cast< ::mozc::user_dictionary::UserDictionary::PosType>(-1)')
+          b'static_cast< ::mozc::user_dictionary::UserDictionary::PosType>(-1)')
     else:
-      value = '::mozc::user_dictionary::UserDictionary::' + value
-    output.write('  { %s, %s },\n' % (key, value))
+      value = b'::mozc::user_dictionary::UserDictionary::' + value
+    output.write(b'  { %s, %s },\n' % (key, value))
   output.write(FOOTER)
 
 
@@ -121,7 +121,7 @@ def main():
   pos_map = GeneratePosMap(options.third_party_pos_map_file,
                            options.user_pos_file)
 
-  with open(options.output, 'w') as stream:
+  with open(options.output, 'wb') as stream:
     OutputPosMap(pos_map, stream)
 
 

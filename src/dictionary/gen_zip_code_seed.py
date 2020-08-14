@@ -83,7 +83,7 @@ class ZipEntry(object):
     address = unicodedata.normalize('NFKC', self.address)
     line = '\t'.join([zip_code, '0', '0', str(ZIP_CODE_COST),
                       address, ZIP_CODE_LABEL])
-    print line.encode('utf-8')
+    print(line.encode('utf-8'))
 
 
 def ProcessZipCodeCSV(file_name):
@@ -105,26 +105,26 @@ def ProcessJigyosyoCSV(file_name):
 
 def ReadZipCodeEntries(zip_code, level1, level2, level3):
   """Read zip code entries."""
-  return [ZipEntry(zip_code, u''.join([level1, level2, town]))
+  return [ZipEntry(zip_code, ''.join([level1, level2, town]))
           for town in ParseTownName(level3)]
 
 
 def ReadJigyosyoEntry(zip_code, level1, level2, level3, name):
   """Read jigyosyo entry."""
   return ZipEntry(zip_code,
-                  u''.join([level1, level2, level3, u' ', name]))
+                  ''.join([level1, level2, level3, ' ', name]))
 
 
 def ParseTownName(level3):
   """Parse town name."""
-  if level3.find(u'以下に掲載がない場合') != -1:
+  if level3.find('以下に掲載がない場合') != -1:
     return ['']
 
   assert CanParseAddress(level3), ('failed to be merged %s'
                                    % level3.encode('utf-8'))
 
   # We ignore additional information here.
-  level3 = re.sub(u'（.*）', u'', level3, re.U)
+  level3 = re.sub('（.*）', '', level3, re.U)
 
   # For 地割, we have these cases.
   #  XX1地割
@@ -134,7 +134,7 @@ def ParseTownName(level3):
   #  XX第1地割、XX第2地割、
   #  XX第1地割〜XX第2地割、
   # We simply use XX for them.
-  chiwari_match = re.match(u'(\D*?)第?\d+地割.*', level3, re.U)
+  chiwari_match = re.match('(\D*?)第?\d+地割.*', level3, re.U)
   if chiwari_match:
     town = chiwari_match.group(1)
     return [town]
@@ -144,21 +144,21 @@ def ParseTownName(level3):
   #   -> XX町YY and (XX町)ZZ
   #  YY、ZZ
   #   -> YY and ZZ
-  chou_match = re.match(u'(.*町)?(.*)', level3, re.U)
+  chou_match = re.match('(.*町)?(.*)', level3, re.U)
   if chou_match:
-    chou = u''
+    chou = ''
     if chou_match.group(1):
       chou = chou_match.group(1)
     rests = chou_match.group(2)
-    return [chou + rest for rest in rests.split(u'、')]
+    return [chou + rest for rest in rests.split('、')]
 
   return [level3]
 
 
 def CanParseAddress(address):
   """Return true for valid address."""
-  return (address.find(u'（') == -1 or
-          address.find(u'）') != -1)
+  return (address.find('（') == -1 or
+          address.find('）') != -1)
 
 
 def ParseOptions():

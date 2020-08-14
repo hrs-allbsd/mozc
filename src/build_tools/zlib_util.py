@@ -58,7 +58,7 @@ def Decompress(input_filename, output_filename):
 
 def main():
   if len(sys.argv) != 4:
-    print >>sys.stderr, 'Invalid arguments'
+    print('Invalid arguments', file=sys.stderr)
     return
   if sys.argv[1] == 'compress':
     Compress(sys.argv[2], sys.argv[3])
@@ -66,7 +66,7 @@ def main():
   if sys.argv[1] == 'decompress':
     Decompress(sys.argv[2], sys.argv[3])
     return
-  print >>sys.stderr, 'Unknown command:', sys.argv[1]
+  print('Unknown command:', sys.argv[1], file=sys.stderr)
 
 
 if __name__ == '__main__':

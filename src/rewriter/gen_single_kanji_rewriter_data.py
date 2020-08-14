@@ -52,7 +52,7 @@ def ReadSingleKanji(stream):
   stream = code_generator_util.ParseColumnStream(stream, num_column=2)
   outputs = list(stream)
   # For binary search by |key|, sort outputs here.
-  outputs.sort(lambda x, y: cmp(x[0], y[0]))
+  outputs.sort(key=lambda x: x[0])
 
   return outputs
 
@@ -72,7 +72,7 @@ def ReadVariant(stream):
       variant_items.append([target, original, len(variant_types) - 1])
 
   # For binary search by |target|, sort variant items here.
-  variant_items.sort(lambda x, y: cmp(x[0], y[0]))
+  variant_items.sort(key=lambda x: x[0])
 
   return (variant_types, variant_items)
 
@@ -151,10 +151,10 @@ def _ParseOptions():
 def main():
   options = _ParseOptions()
 
-  with open(options.single_kanji_file, 'r') as single_kanji_stream:
+  with open(options.single_kanji_file, 'rb') as single_kanji_stream:
     single_kanji = ReadSingleKanji(single_kanji_stream)
 
-  with open(options.variant_file, 'r') as variant_stream:
+  with open(options.variant_file, 'rb') as variant_stream:
     variant_info = ReadVariant(variant_stream)
 
   WriteSingleKanji(single_kanji,

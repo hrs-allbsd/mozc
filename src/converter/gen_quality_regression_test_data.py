@@ -84,7 +84,7 @@ def ParseXML(file):
                else _ENABLED)
     id = issue.attributes['id'].value
     target = GetText(issue.getElementsByTagName('target'))
-    for detail in issue.getElementsByTagName(u'detail'):
+    for detail in issue.getElementsByTagName('detail'):
       fields = []
       fields.append('mozcsu_%s' % id)
       for key in ('reading', 'output', 'actionStatus', 'rank', 'accuracy'):
@@ -104,19 +104,19 @@ def ParseFile(file):
 
 def GenerateHeader(files):
   try:
-    print 'namespace mozc{'
-    print 'struct TestCase {'
-    print '  const bool enabled;'
-    print '  const char *tsv;'
-    print '} kTestData[] = {'
+    print('namespace mozc{')
+    print('struct TestCase {')
+    print('  const bool enabled;')
+    print('  const char *tsv;')
+    print('} kTestData[] = {')
     for file in files:
       for enabled, line in ParseFile(file):
-        print ' {%s, "%s"},' % (enabled, EscapeString(line))
-    print '  {false, nullptr},'
-    print '};'
-    print '}  // namespace mozc'
+        print(' {%s, "%s"},' % (enabled, EscapeString(line)))
+    print('  {false, nullptr},')
+    print('};')
+    print('}  // namespace mozc')
   except:
-    print 'cannot open %s' % (file)
+    print('cannot open %s' % (file))
     sys.exit(1)
 
 

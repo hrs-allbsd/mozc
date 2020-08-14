@@ -46,18 +46,19 @@ def main():
     code = int(code, 16)
     if code < 0x2FFFF:
       results.append("  { %d, \"%s\" }," % (code, desc))
+  fh.close()
 
-  print "struct UnicodeData {";
-  print "  char32 ucs4;";
-  print "  const char *description;";
-  print "};";
-  print ""
-  print "static const size_t kUnicodeDataSize = %d;" % (len(results))
-  print "static const UnicodeData kUnicodeData[] = {";
+  print("struct UnicodeData {");
+  print("  char32 ucs4;");
+  print("  const char *description;");
+  print("};");
+  print("")
+  print("static const size_t kUnicodeDataSize = %d;" % (len(results)))
+  print("static const UnicodeData kUnicodeData[] = {");
   for line in results:
-    print line;
-  print "  { 0, NULL }";
-  print "};";
+    print(line);
+  print("  { 0, NULL }");
+  print("};");
 
 if __name__ == "__main__":
   main()

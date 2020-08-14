@@ -86,11 +86,11 @@ class SpecialMergeZip(object):
 
 
 _SPECIAL_CASES = [
-    SpecialMergeZip(u'5900111', u'大阪府', u'堺市中区', [u'三原台']),
-    SpecialMergeZip(u'8710046', u'大分県', u'中津市',
-                    [u'金谷', u'西堀端', u'東堀端', u'古金谷']),
-    SpecialMergeZip(u'9218046', u'石川県', u'金沢市',
-                    [u'大桑町', u'三小牛町']),
+    SpecialMergeZip('5900111', '大阪府', '堺市中区', ['三原台']),
+    SpecialMergeZip('8710046', '大分県', '中津市',
+                    ['金谷', '西堀端', '東堀端', '古金谷']),
+    SpecialMergeZip('9218046', '石川県', '金沢市',
+                    ['大桑町', '三小牛町']),
     ]
 
 

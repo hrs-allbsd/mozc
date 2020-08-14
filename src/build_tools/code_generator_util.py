@@ -33,27 +33,26 @@
 __author__ = "hidehiko"
 
 import struct
-import types
 
 
 def ToCppStringLiteral(s):
   """Returns C-style string literal, or NULL if given s is None."""
   if s is None:
-    return 'NULL'
+    return b'NULL'
 
-  if all(0x20 <= ord(c) <= 0x7E for c in s):
+  if all(0x20 <= c <= 0x7E for c in s):
     # All characters are in ascii code.
-    return '"%s"' % s.replace('\\', r'\\').replace('"', r'\"')
+    return b'"%b"' % s.replace(b'\\', br'\\').replace(b'"', br'\"')
   else:
     # One or more characters are non-ascii.
-    return '"%s"' % ''.join(r'\x%02X' % ord(c) for c in s)
+    return b'"%b"' % b''.join(br'\x%02X' % c for c in s)
 
 
 def FormatWithCppEscape(format_text, *args):
   """Returns a string filling format with args."""
   literal_list = []
   for arg in args:
-    if isinstance(arg, (types.StringType, types.NoneType)):
+    if isinstance(arg, (bytes, type(None))):
       arg = ToCppStringLiteral(arg)
     literal_list.append(arg)
 
@@ -95,7 +94,7 @@ def WriteCppDataArray(data, variable_name, target_compiler, stream):
   if target_compiler and target_compiler.startswith('msvs'):
     stream.write('const uint64 k%s_data_wordtype[] = {\n' % variable_name)
 
-    for word_index in xrange(0, len(data), 8):
+    for word_index in range(0, len(data), 8):
       word_chunk = data[word_index:word_index + 8].ljust(8, '\x00')
       stream.write('0x%016X, ' % struct.unpack('<Q', word_chunk))
       if (word_index / 8) % 4 == 3:
@@ -111,7 +110,7 @@ def WriteCppDataArray(data, variable_name, target_compiler, stream):
     stream.write('const char k%s_data[] =\n' % variable_name)
     # Output 16bytes per line.
     chunk_size = 16
-    for index in xrange(0, len(data), chunk_size):
+    for index in range(0, len(data), chunk_size):
       chunk = data[index:index + chunk_size]
       stream.write('"')
       stream.writelines(r'\x%02X' % ord(c) for c in chunk)
@@ -126,36 +125,50 @@ def ToJavaStringLiteral(codepoint_list):
   if type(codepoint_list) is int:
     codepoint_list = (codepoint_list,)
   if codepoint_list is None or len(codepoint_list) == 0:
-    return 'null'
-  result = r'"'
+    return b'null'
+  result = b'"'
   for codepoint in codepoint_list:
-    utf16_string = unichr(codepoint).encode('utf-16be')
+    utf16_string = chr(codepoint).encode('utf-16be')
     if len(utf16_string) == 2:
       (u0, l0) = utf16_string
-      result += r'\u%02X%02X' % (ord(u0), ord(l0))
+      result += br'\u%02X%02X' % (u0, l0)
     else:
       (u0, l0, u1, l1) = utf16_string
-      result += r'\u%02X%02X\u%02X%02X' % (ord(u0), ord(l0), ord(u1), ord(l1))
-  result += r'"'
+      result += br'\u%02X%02X\u%02X%02X' % (u0, l0, u1, l1)
+  result += b'"'
   return result
 
 
 def SkipLineComment(stream, comment_prefix='#'):
   """Skips line comments from stream."""
   for line in stream:
+    if isinstance(line, bytes):
+      if isinstance(comment_prefix, str):
+        comment_prefix = comment_prefix.encode('utf-8')
+      line_ending = b'\n'
+    else:
+      line_ending = '\n'
     stripped_line = line.strip()
     if stripped_line and not stripped_line.startswith(comment_prefix):
-      yield line.rstrip('\n')
+      yield line.rstrip(line_ending)
 
 
 def ParseColumnStream(stream, num_column=None, delimiter=None):
   """Returns parsed columns read from stream."""
   if num_column is None:
     for line in stream:
-      yield line.rstrip('\n').split(delimiter)
+      if isinstance(line, bytes):
+        line_ending = b'\n'
+      else:
+        line_ending = '\n'
+      yield line.rstrip(line_ending).split(delimiter)
   else:
     for line in stream:
-      yield line.rstrip('\n').split(delimiter)[:num_column]
+      if isinstance(line, bytes):
+        line_ending = b'\n'
+      else:
+        line_ending = '\n'
+      yield line.rstrip(line_ending).split(delimiter)[:num_column]
 
 
 def SelectColumn(stream, column_index):
@@ -172,5 +185,5 @@ def SplitChunk(iterable, n):
   grouper extends the last chunk to make it an n-element chunk by adding
   appropriate value, but this returns truncated chunk.
   """
-  for index in xrange(0, len(iterable), n):
+  for index in range(0, len(iterable), n):
     yield iterable[index:index + n]

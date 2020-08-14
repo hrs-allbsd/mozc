@@ -46,17 +46,17 @@ import sys
 
 def RunOrDie(command):
   """Run the command, or die if it failed."""
-  print "Running: " + command
+  print("Running: " + command)
   try:
     output = subprocess.check_output(command, shell=True)
-    print >> sys.stderr, "=========="
-    print >> sys.stderr, "COMMAND: " + command
-    print >> sys.stderr, output
+    print("==========", file=sys.stderr)
+    print("COMMAND: " + command, file=sys.stderr)
+    print(output, file=sys.stderr)
   except subprocess.CalledProcessError as e:
-    print >> sys.stderr, "=========="
-    print >> sys.stderr, "ERROR: " + command
-    print >> sys.stderr, e.output
-    print >> sys.stderr, "=========="
+    print("==========", file=sys.stderr)
+    print("ERROR: " + command, file=sys.stderr)
+    print(e.output, file=sys.stderr)
+    print("==========", file=sys.stderr)
     sys.exit(1)
 
 
@@ -119,18 +119,18 @@ def ParseOption():
   (options, unused_args) = parser.parse_args()
 
   if not options.target:
-    print "Error: --target should be specified."
-    print parser.print_help()
+    print("Error: --target should be specified.")
+    print(parser.print_help())
     sys.exit(1)
 
   return options
 
 
 def DumpEnviron():
-  print "=== os.environ ==="
+  print("=== os.environ ===")
   for key in sorted(os.environ):
-    print "%s = %s" % (key, os.getenv(key))
-  print "=================="
+    print("%s = %s" % (key, os.getenv(key)))
+  print("==================")
 
 
 def main():

@@ -41,15 +41,15 @@ def ReadZeroQueryNumberData(input_stream):
   zero_query_dict = defaultdict(list)
 
   for line in input_stream:
-    if line.startswith('#'):
+    if line.startswith(b'#'):
       continue
-    line = line.rstrip('\r\n')
+    line = line.rstrip(b'\r\n')
     if not line:
       continue
 
-    tokens = line.split('\t')
+    tokens = line.split(b'\t')
     key = tokens[0]
-    values = tokens[1].split(',')
+    values = tokens[1].split(b',')
 
     for value in values:
       zero_query_dict[key].append(
@@ -71,7 +71,7 @@ def ParseOption():
 
 def main():
   options = ParseOption()
-  with open(options.input, 'r') as input_stream:
+  with open(options.input, 'rb') as input_stream:
     zero_query_dict = ReadZeroQueryNumberData(input_stream)
   util.WriteZeroQueryData(zero_query_dict,
                           options.output_token_array,

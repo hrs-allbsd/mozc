@@ -52,7 +52,7 @@ def _ErrorExit(message):
   Args:
     message: The error message to be printed to stderr.
   """
-  print >>sys.stderr, message
+  print(message, file=sys.stderr)
   sys.exit(1)
 
 

@@ -58,11 +58,11 @@ def SerializeToFile(strings, filename):
     f.write(struct.pack('<I', array_size))
 
     # Offset and length array of (4 + 4) * array_size bytes.
-    for i in xrange(array_size):
+    for i in range(array_size):
       f.write(struct.pack('<I', offsets[i]))
       f.write(struct.pack('<I', lengths[i]))
 
     # Strings chunk.
-    for i in xrange(array_size):
+    for i in range(array_size):
       f.write(strings[i])
-      f.write('\0')
+      f.write(b'\0')

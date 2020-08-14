@@ -55,7 +55,7 @@ def ReplaceVariables(data, environment):
       The value for the variable if the variable is defined in the
       environment.  Otherwise original string is returned.
     """
-    if environment.has_key(matchobj.group(1)):
+    if matchobj.group(1) in environment:
       return environment[matchobj.group(1)]
     return matchobj.group(0)
 

@@ -38,7 +38,7 @@ import optparse
 import os
 import shutil
 
-from util import PrintErrorAndExit
+from .util import PrintErrorAndExit
 
 def ParseOption():
   """Parse command line options."""
@@ -98,7 +98,7 @@ def DeployMain(full_filename, src_paths, target_absdir):
     if _GetLastModifiedTime(src) <= target_file_mtime:
       # Older file found. Ignore.
       continue
-    print 'Copying %s to %s' % (src, target_file_abspath)
+    print('Copying %s to %s' % (src, target_file_abspath))
     shutil.copy2(src, target_file_abspath)
     break
 

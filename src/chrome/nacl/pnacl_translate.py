@@ -54,11 +54,11 @@ def Translate(toolchain_root, input_file, output_base):
   for target in targets:
     cmd = (translate_command, '--allow-llvm-bitcode-input', '-arch', target[0],
            input_file, '-o', '%s_%s.nexe' % (output_base, target[1]))
-    print 'Running: ' + ' '.join(cmd)
+    print('Running: ' + ' '.join(cmd))
     if subprocess.Popen(cmd).wait() != 0:
-      print >> sys.stderr, 'ERROR: ' + ' '.join(cmd)
+      print('ERROR: ' + ' '.join(cmd), file=sys.stderr)
       raise RuntimeError('Translate Error')
-    print 'Done: ' + ' '.join(cmd)
+    print('Done: ' + ' '.join(cmd))
 
 
 def StripAndTranslate(toolchain_root, input_file, output_base):
@@ -68,21 +68,21 @@ def StripAndTranslate(toolchain_root, input_file, output_base):
     temp_dir = tempfile.mkdtemp()
     temp_file_base = os.path.join(temp_dir, 'stripped')
     cmd = (strip_command, input_file, '-o', temp_file_base)
-    print 'Running: ' + ' '.join(cmd)
+    print('Running: ' + ' '.join(cmd))
     if subprocess.Popen(cmd).wait() != 0:
-      print >> sys.stderr, 'ERROR: ' + ' '.join(cmd)
+      print('ERROR: ' + ' '.join(cmd), file=sys.stderr)
       raise RuntimeError('Strip Error')
-    print 'Done: ' + ' '.join(cmd)
+    print('Done: ' + ' '.join(cmd))
     Translate(toolchain_root, temp_file_base, temp_file_base)
     targets = ('arm', 'x86_32', 'x86_64')
     for target in targets:
       cmd = (strip_command, '%s_%s.nexe' % (temp_file_base, target),
              '-o', '%s_%s.nexe' % (output_base, target))
-      print 'Running: ' + ' '.join(cmd)
+      print('Running: ' + ' '.join(cmd))
       if subprocess.Popen(cmd).wait() != 0:
-        print >> sys.stderr, 'ERROR: ' + ' '.join(cmd)
+        print('ERROR: ' + ' '.join(cmd), file=sys.stderr)
         raise RuntimeError('Strip Error')
-      print 'Done: ' + ' '.join(cmd)
+      print('Done: ' + ' '.join(cmd))
   finally:
     shutil.rmtree(temp_dir)
 
@@ -101,15 +101,15 @@ def main():
   (options, _) = parser.parse_args()
 
   if not options.toolchain_root:
-    print >> sys.stderr, 'Error: toolchain_root is not set.'
+    print('Error: toolchain_root is not set.', file=sys.stderr)
     sys.exit(1)
 
   if not options.input:
-    print >> sys.stderr, 'Error: input is not set.'
+    print('Error: input is not set.', file=sys.stderr)
     sys.exit(1)
 
   if not options.output_base:
-    print >> sys.stderr, 'Error: output_base is not set.'
+    print('Error: output_base is not set.', file=sys.stderr)
     sys.exit(1)
 
   if options.configuration == 'Release':

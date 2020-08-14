@@ -64,7 +64,7 @@ def OutputUserPosData(user_pos_data, output_token_array, output_string_array):
         f.write(struct.pack('<H', conjugation_id))
 
   serialized_string_array_builder.SerializeToFile(
-      sorted(string_index.iterkeys()), output_string_array)
+      sorted(x.encode('utf-8') for x in string_index.keys()), output_string_array)
 
 
 def ParseOptions():
@@ -100,7 +100,7 @@ def main():
 
   if options.output_pos_list:
     serialized_string_array_builder.SerializeToFile(
-        [pos for (pos, _) in user_pos.data], options.output_pos_list)
+        [pos.encode('utf-8') for (pos, _) in user_pos.data], options.output_pos_list)
 
 
 if __name__ == '__main__':

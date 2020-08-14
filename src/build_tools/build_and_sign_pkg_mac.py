@@ -44,8 +44,8 @@ import os
 import shutil
 import sys
 
-from util import PrintErrorAndExit
-from util import RunOrDie
+from .util import PrintErrorAndExit
+from .util import RunOrDie
 
 
 def ParseOption():

@@ -30,7 +30,6 @@
 
 __author__ = "taku"
 
-import string
 import re
 import sys
 
@@ -43,9 +42,9 @@ def LoadJISX0201(filename):
   fh = open(filename)
   result = []
   for line in fh.readlines():
-    if line[0] is '#':
+    if line[0] == '#':
       continue
-    array = string.split(line)
+    array = line.split()
     jis = array[0].replace('0x', '')
     ucs2 = array[1].replace('0x', '')
     if len(jis) == 2:
@@ -53,6 +52,7 @@ def LoadJISX0201(filename):
 
     if IsValidUnicode(ucs2):
       result.append([jis, ucs2])
+  fh.close()
 
   return ["JISX0201", result]
 
@@ -60,13 +60,14 @@ def LoadJISX0208(filename):
   fh = open(filename)
   result = []
   for line in fh.readlines():
-    if line[0] is '#':
+    if line[0] == '#':
       continue
     array = line.split()
     jis = array[1].replace('0x', '')
     ucs2 = array[2].replace('0x', '')
     if IsValidUnicode(ucs2):
       result.append([jis, ucs2])
+  fh.close()
 
   return ["JISX0208", result]
 
@@ -74,13 +75,14 @@ def LoadJISX0212(filename):
   fh = open(filename)
   result = []
   for line in fh.readlines():
-    if line[0] is '#':
+    if line[0] == '#':
       continue
     array = line.split()
     jis = array[0].replace('0x', '')
     ucs2 = array[1].replace('0x', '')
     if IsValidUnicode(ucs2):
       result.append([jis, ucs2])
+  fh.close()
 
   return ["JISX0212", result]
 
@@ -88,7 +90,7 @@ def LoadCP932(filename):
   fh = open(filename)
   result = []
   for line in fh.readlines():
-    if line[0] is '#':
+    if line[0] == '#':
       continue
     array = line.split()
     sjis = array[0].replace('0x', '')
@@ -100,19 +102,20 @@ def LoadCP932(filename):
 
     if IsValidUnicode(ucs2):
       result.append([sjis, ucs2])
+  fh.close()
 
   return ["CP932", result]
 
 def Output(arg):
   name = arg[0]
   result = arg[1]
-  print "static const size_t k%sMapSize = %d;" % (name, len(result))
-  print "static const mozc::gui::CharacterPalette::LocalCharacterMap k%sMap[] = {" % (name)
+  print("static const size_t k%sMapSize = %d;" % (name, len(result)))
+  print("static const mozc::gui::CharacterPalette::LocalCharacterMap k%sMap[] = {" % (name))
   for n in result:
-    print "  { 0x%s, 0x%s }," % (n[0] ,n[1])
-  print "  { 0, 0 }";
-  print "};"
-  print ""
+    print("  { 0x%s, 0x%s }," % (n[0] ,n[1]))
+  print("  { 0, 0 }");
+  print("};")
+  print("")
 
 if __name__ == "__main__":
   Output(LoadJISX0201(sys.argv[1]))

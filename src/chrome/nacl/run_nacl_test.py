@@ -73,7 +73,7 @@ def RunCommand(options, command):
   output, _ = process.communicate()
   logging.info(output)
   if process.returncode != 0:
-    raise StandardError('Failed to run the command: ' + ' '.join(args))
+    raise Exception('Failed to run the command: ' + ' '.join(args))
   return output
 
 

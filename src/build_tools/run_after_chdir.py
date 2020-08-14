@@ -57,7 +57,7 @@ def main():
     sys.argv.insert(0, sys.executable)  # Inject the python interpreter path.
   # We don't capture stdout and stderr from Popen. The output will just
   # be emitted to a terminal or console.
-  print sys.argv
+  print(sys.argv)
   sys.exit(subprocess.call(sys.argv))
 
 if __name__ == '__main__':

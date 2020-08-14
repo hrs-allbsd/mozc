@@ -42,8 +42,8 @@ import datetime
 import logging
 import optparse
 import sys
-import mozc_version
-import tweak_data
+from . import mozc_version
+from . import tweak_data
 
 _COPYRIGHT_YEAR = datetime.date.today().year
 
@@ -81,7 +81,7 @@ def main():
 
   version = mozc_version.MozcVersion(options.version_file)
 
-  copyright_message = (u'© %d Google Inc.' % _COPYRIGHT_YEAR).encode('utf-8')
+  copyright_message = ('© %d Google Inc.' % _COPYRIGHT_YEAR).encode('utf-8')
   long_version = version.GetVersionString()
   short_version = version.GetVersionInFormat('@MAJOR@.@MINOR@.@BUILD@')
 

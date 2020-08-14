@@ -90,7 +90,7 @@ def main():
   # setup volume directory
   temp_dir = tempfile.mkdtemp()
   CopyFile(path.join(build_dir, ".keystone_install"), temp_dir)
-  os.chmod(path.join(temp_dir, ".keystone_install"), 0755) # rwxr-xr-x
+  os.chmod(path.join(temp_dir, ".keystone_install"), 0o755) # rwxr-xr-x
   for a in args:
     CopyFile(path.join(build_dir, a), temp_dir)
 

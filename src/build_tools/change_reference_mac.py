@@ -41,8 +41,8 @@ __author__ = "horo"
 import optparse
 import os
 
-from util import PrintErrorAndExit
-from util import RunOrDie
+from .util import PrintErrorAndExit
+from .util import RunOrDie
 
 
 def ParseOption():

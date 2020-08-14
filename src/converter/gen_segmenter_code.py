@@ -54,18 +54,22 @@ def ReadPOSID(id_file, special_pos_file):
   pos = {}
   max_id = 0
 
-  for line in open(id_file, "r"):
+  fh = open(id_file, "r")
+  for line in fh:
     fields = line.split()
     pos[fields[1]] = fields[0]
     max_id = max(int(fields[0]), max_id)
+  fh.close()
 
   max_id = max_id + 1
-  for line in open(special_pos_file, "r"):
+  fh = open(special_pos_file, "r")
+  for line in fh:
     if len(line) <= 1 or line[0] == '#':
       continue
     fields = line.split()
     pos[fields[0]] = ("%d" % max_id)
     max_id = max_id + 1
+  fh.close()
 
   return pos
 
@@ -79,8 +83,7 @@ def GetRange(pos, pattern, name):
   pat = re.compile(PatternToRegexp(pattern))
   min = -1;
   max = -1;
-  keys = pos.keys()
-  keys.sort()
+  keys = sorted(pos.keys())
 
   range = []
 
@@ -107,7 +110,7 @@ def GetRange(pos, pattern, name):
       tmp.append("(%s >= %s && %s <= %s)" % (name, r[0], name, r[1]))
 
   if len(tmp) == 0:
-    print "FATAL: No rule fiind %s" % (pattern)
+    print("FATAL: No rule fiind %s" % (pattern))
     sys.exit(-1)
 
   return " || ".join(tmp)
@@ -115,19 +118,21 @@ def GetRange(pos, pattern, name):
 def main():
   pos = ReadPOSID(sys.argv[1], sys.argv[2])
 
-  print HEADER % (len(pos.keys()), len(pos.keys()))
+  print(HEADER % (len(pos.keys()), len(pos.keys())))
 
-  for line in open(sys.argv[3], "r"):
+  fh = open(sys.argv[3], "r")
+  for line in fh:
     if len(line) <= 1 or line[0] == '#':
       continue
     (l, r, result) = line.split()
     result = result.lower()
     lcond = GetRange(pos, l, "rid") or "true";
     rcond = GetRange(pos, r, "lid") or "true";
-    print "  // %s %s %s" % (l, r, result)
-    print "  if ((%s) && (%s)) { return %s; }" % (lcond, rcond, result)
+    print("  // %s %s %s" % (l, r, result))
+    print("  if ((%s) && (%s)) { return %s; }" % (lcond, rcond, result))
+  fh.close()
 
-  print FOOTER
+  print(FOOTER)
 
 if __name__ == "__main__":
   main()

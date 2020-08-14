@@ -69,7 +69,7 @@ def WriteZeroQueryData(zero_query_dict, output_token_array,
                        output_string_array):
   # Collect all the strings and assing index in ascending order
   string_index = {}
-  for key, entry_list in zero_query_dict.iteritems():
+  for key, entry_list in zero_query_dict.items():
     string_index[key] = 0
     for entry in entry_list:
       string_index[entry.value] = 0

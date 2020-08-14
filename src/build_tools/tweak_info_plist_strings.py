@@ -40,7 +40,7 @@ import datetime
 import logging
 import optparse
 import sys
-import tweak_data
+from . import tweak_data
 
 _COPYRIGHT_YEAR = datetime.date.today().year
 
@@ -77,7 +77,7 @@ def main():
   if options.branding == 'GoogleJapaneseInput':
     variables = {
         'CF_BUNDLE_NAME_EN': 'Google Japanese Input',
-        'CF_BUNDLE_NAME_JA': u'Google 日本語入力'.encode('utf-8'),
+        'CF_BUNDLE_NAME_JA': 'Google 日本語入力'.encode('utf-8'),
         'NS_HUMAN_READABLE_COPYRIGHT': copyright_message,
         'INPUT_MODE_ANNOTATION': 'Google',
         }

@@ -45,27 +45,27 @@ Example usage:
     --timeout=20
 """
 
-import BaseHTTPServer
+import _thread
+import http.server
 import optparse
 import os
 import os.path
 import shutil
-import SocketServer
+import socketserver
 import subprocess
 import sys
 import tempfile
-import thread
 import time
-import urlparse
+import urllib.parse
 
 
-class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+class RequestHandler(http.server.BaseHTTPRequestHandler):
   """Handle the HTTP requests that arrive at the server."""
 
   def do_GET(self):
   # pylint: disable=g-bad-name
     """Handles GET request."""
-    parsed_path = urlparse.urlparse(self.path)
+    parsed_path = urllib.parse.urlparse(self.path)
     options = {'response': 200,
                'result': '',
                'before_response_sleep': 0.0,
@@ -77,7 +77,7 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                'data': 'DEFAULT_DATA',
                'times': 1,
                'redirect_location': ''}
-    query = urlparse.parse_qsl(parsed_path.query)
+    query = urllib.parse.parse_qsl(parsed_path.query)
     for params in query:
       options[params[0]] = params[1]
 
@@ -113,13 +113,14 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
       full_path = os.path.join(extra_dir, os.path.basename(parsed_path.path))
       if os.path.isfile(full_path):
         try:
-          data = open(full_path).read()
+          with open(full_path) as f:
+            data = f.read()
           self.send_response(200)
           self.send_header('Content-Length', len(data))
           self.end_headers()
           self.wfile.write(data)
-        except IOError, (errno, strerror):
-          print 'I/O error(%s): %s' % (errno, strerror)
+        except IOError as e:
+          print('I/O error(%s): %s' % (e.errno, e.strerror))
         return
 
     try:
@@ -143,14 +144,14 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         time.sleep(float(options['before_data_sleep']))
         self.wfile.write(options['data'])
         time.sleep(float(options['after_data_sleep']))
-    except IOError, (errno, strerror):
-      print 'I/O error(%s): %s' % (errno, strerror)
+    except IOError as e:
+      print('I/O error(%s): %s' % (e.errno, e.strerror))
     return
 
   def do_POST(self):
   # pylint: disable=g-bad-name
     """Handles POST request."""
-    parsed_path = urlparse.urlparse(self.path)
+    parsed_path = urllib.parse.urlparse(self.path)
     options = {'response': 200,
                'result': '',
                'before_response_sleep': 0.0,
@@ -159,7 +160,7 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                'after_data_sleep': 0.0,
                'content_length': '',
                'redirect_location': ''}
-    query = urlparse.parse_qsl(parsed_path.query)
+    query = urllib.parse.parse_qsl(parsed_path.query)
     for params in query:
       options[params[0]] = params[1]
 
@@ -185,18 +186,18 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
       self.wfile.write(post_data)
       time.sleep(float(options['after_data_sleep']))
       return
-    except IOError, (errno, strerror):
-      print 'I/O error(%s): %s' % (errno, strerror)
+    except IOError as e:
+      print('I/O error(%s): %s' % (e.errno, e.strerror))
     return
 
   def do_HEAD(self):
   # pylint: disable=g-bad-name
     """Handles HEAD request."""
-    parsed_path = urlparse.urlparse(self.path)
+    parsed_path = urllib.parse.urlparse(self.path)
     options = {'response': 200,
                'before_response_sleep': 0.0,
                'before_head_sleep': 0.0}
-    query = urlparse.parse_qsl(parsed_path.query)
+    query = urllib.parse.parse_qsl(parsed_path.query)
     for params in query:
       options[params[0]] = params[1]
 
@@ -210,12 +211,12 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
       for name, value in sorted(self.headers.items()):
         self.send_header('CLIENT_HEADER_%s' % name, '%s' % value)
       self.end_headers()
-    except IOError, (errno, strerror):
-      print 'I/O error(%s): %s' % (errno, strerror)
+    except IOError as e:
+      print('I/O error(%s): %s' % (e.errno, e.strerror))
     return
 
 
-class TestServer(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
+class TestServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
   def Configure(self, serving_dirs):
     self.serving_dirs = serving_dirs
     self.finished = False
@@ -243,12 +244,12 @@ def main():
   server = TestServer(('localhost', 9999), RequestHandler)
   server.Configure(options.serving_dirs)
   host, port = server.socket.getsockname()
-  print 'Starting server %s:%s' % (host, port)
+  print('Starting server %s:%s' % (host, port))
 
   def Serve():
     while not server.finished:
       server.handle_request()
-  thread.start_new_thread(Serve, ())
+  _thread.start_new_thread(Serve, ())
 
   temp_dir = tempfile.mkdtemp()
   if options.browser_path:
@@ -257,7 +258,7 @@ def main():
       cmd.append('--load-extension=%s' % options.load_extension)
     if options.url:
       cmd.append('http://%s:%s/%s' % (host, port, options.url))
-    print cmd
+    print(cmd)
     browser_handle = subprocess.Popen(cmd)
 
   time_started = time.time()

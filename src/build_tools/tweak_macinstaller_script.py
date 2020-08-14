@@ -39,7 +39,7 @@ __author__ = "mukai"
 import logging
 import optparse
 
-import mozc_version
+from . import mozc_version
 
 
 def _ReplaceVariables(data, environment):

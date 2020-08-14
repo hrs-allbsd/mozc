@@ -70,7 +70,8 @@ def PatternToRegexp(pattern):
 def LoadPatterns(file):
   prefix = []
   suffix = []
-  for line in open(file, 'r'):
+  fh = open(file, 'r')
+  for line in fh:
     if len(line) <= 1 or line[0] == '#':
       continue
     fields = line.split()
@@ -84,8 +85,9 @@ def LoadPatterns(file):
     elif label == 'SUFFIX':
       suffix.append([re.compile(PatternToRegexp(feature)), cost])
     else:
-      print 'format error %s' % (line)
+      print('format error %s' % (line))
       sys.exit(0)
+  fh.close()
   return (prefix, suffix)
 
 
@@ -100,19 +102,23 @@ def GetCost(patterns, feature):
 
 def LoadFeatures(filename):
   features = []
-  for line in open(filename, 'r'):
+  fh = open(filename, 'r')
+  for line in fh:
     fields = line.split()
     features.append(fields[1])
+  fh.close()
   return features
 
 
 def CountSpecialPos(filename):
   count = 0
-  for line in open(filename, 'r'):
+  fh = open(filename, 'r')
+  for line in fh:
     line = line.rstrip()
     if not line or line[0] == '#':
       continue
     count += 1
+  fh.close()
   return count
 
 
@@ -141,7 +147,7 @@ def main():
       f.write(struct.pack('<H', GetCost(prefix, feature)))
       f.write(struct.pack('<H', GetCost(suffix, feature)))
 
-    for _ in xrange(num_special_pos):
+    for _ in range(num_special_pos):
       f.write(struct.pack('<H', 0))
       f.write(struct.pack('<H', 0))
 

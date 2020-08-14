@@ -54,9 +54,9 @@ def ProcessCall(command):
   try:
     subprocess.check_output(command)
   except subprocess.CalledProcessError as e:
-    print e.output
+    print(e.output)
     sys.exit(e.returncode)
-  print 'Done: %s' % ' '.join(command)
+  print('Done: %s' % ' '.join(command))
 
 
 def Xcodebuild(projdir, target, arch, sdk, outdir):

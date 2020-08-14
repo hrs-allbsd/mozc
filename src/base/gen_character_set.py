@@ -33,7 +33,6 @@ __author__ = "taku"
 import itertools
 import optparse
 import re
-import string
 import sys
 
 
@@ -89,7 +88,8 @@ class CodePointCategorizer(object):
   @staticmethod
   def _LoadTable(filename, column_index, pattern, validater):
     result = set()
-    for line in open(filename):
+    fh = open(filename)
+    for line in fh:
       if line.startswith('#'):
         # Skip a comment line.
         continue
@@ -100,6 +100,7 @@ class CodePointCategorizer(object):
         ucs = int(match.group(1), 16)
         if validater(ucs):
           result.add(ucs)
+    fh.close()
 
     return result
 
@@ -250,7 +251,7 @@ def GenerateCategoryBitmap(category_list, name):
   # (at most) four code points.
   bit_list = []
   for _, group in itertools.groupby(enumerate(category_list),
-                                    lambda (codepoint, _): codepoint / 4):
+                                    lambda x: x[0] // 4):
     # Fill bits from LSB to MSB for each group.
     bits = 0
     for index, (_, category) in enumerate(group):
@@ -263,7 +264,7 @@ def GenerateCategoryBitmap(category_list, name):
 
   # Output the content. Each line would have (at most) 16 bytes.
   for _, group in itertools.groupby(enumerate(bit_list),
-                                    lambda (index, _): index / 16):
+                                    lambda x: x[0] // 16):
     line = ['    \"']
     for _, bits in group:
       line.append('\\x%02X' % bits)
@@ -386,7 +387,7 @@ def GenerateGetCharacterSet(category_list, bitmap_name, bitmap_size):
   # Bitmap lookup.
   # TODO(hidehiko): the bitmap has two huge 0-bits ranges. Reduce them.
   category_map = [
-      (bits, category) for category, bits in CATEGORY_BITMAP.iteritems()]
+      (bits, category) for category, bits in CATEGORY_BITMAP.items()]
   category_map.sort()
 
   lines.extend([
@@ -451,7 +452,7 @@ def main():
                                      options.jisx0213file)
   category_list = [
       categorizer.GetCategory(codepoint)
-      for codepoint in xrange(categorizer.MaxCodePoint() + 1)]
+      for codepoint in range(categorizer.MaxCodePoint() + 1)]
   generated_character_set_header = GenerateCharacterSetHeader(category_list)
 
   # Write the result.

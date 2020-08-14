@@ -32,7 +32,6 @@ __author__ = "taku"
 
 import re
 import sys
-import string
 
 kUnicodePat = re.compile(r'0x[0-9A-Fa-f]{2,4}')
 def IsValidUnicode(n):
@@ -42,28 +41,29 @@ def main():
   fh = open(sys.argv[1])
   result = {}
   for line in fh.readlines():
-    if line[0] is '#':
+    if line[0] == '#':
       continue
-    array = string.split(line)
+    array = line.split()
     sjis = array[0]
     ucs2 = array[1]
     if eval(sjis) < 32 or not IsValidUnicode(ucs2):
       continue
     result.setdefault(ucs2, sjis)
+  fh.close()
 
   keys = sorted(result.keys())
 
-  print "struct CP932MapData {"
-  print "  unsigned int ucs4;"
-  print "  unsigned short int sjis;"
-  print "};"
-  print ""
-  print "static const size_t kCP932MapDataSize = %d;" % (len(keys))
-  print "static const CP932MapData kCP932MapData[] = {"
+  print("struct CP932MapData {")
+  print("  unsigned int ucs4;")
+  print("  unsigned short int sjis;")
+  print("};")
+  print("")
+  print("static const size_t kCP932MapDataSize = %d;" % (len(keys)))
+  print("static const CP932MapData kCP932MapData[] = {")
   for n in keys:
-    print "  { %s, %s }," % (n ,result[n])
-  print "  { 0, 0 }";
-  print "};"
+    print("  { %s, %s }," % (n ,result[n]))
+  print("  { 0, 0 }");
+  print("};")
 
 if __name__ == "__main__":
   main()

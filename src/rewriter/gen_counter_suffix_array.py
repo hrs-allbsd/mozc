@@ -43,7 +43,7 @@ def ReadCounterSuffixPosIds(id_file):
   with codecs.open(id_file, 'r', encoding='utf-8') as stream:
     stream = code_generator_util.ParseColumnStream(stream, num_column=2)
     for pos_id, pos_name in stream:
-      if pos_name.startswith(u'名詞,接尾,助数詞'):
+      if pos_name.startswith('名詞,接尾,助数詞'):
         pos_ids.add(pos_id)
   return pos_ids
 

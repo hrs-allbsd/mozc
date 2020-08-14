@@ -59,20 +59,20 @@ def ParseCodePoint(s):
   Returns:
     A integer indicating parsed pua.
   """
-  if not s or s[0] == '>':
+  if not s or s[0:1] == b'>':
     return 0
   return int(s, 16)
 
 
 def NormalizeString(string):
   return unicodedata.normalize(
-      'NFKC', string.decode('utf-8')).encode('utf-8').replace('~', '〜')
+      'NFKC', string.decode('utf-8')).replace('~', '〜').encode('utf-8')
 
 
 def RemoveTrailingNumber(string):
   if not string:
-    return ''
-  return re.sub(r'^([^0-9]+)[0-9]+$', r'\1', string)
+    return b''
+  return re.sub(br'^([^0-9]+)[0-9]+$', r'\1', string)
 
 
 def GetReadingsFromDescription(description):
@@ -84,19 +84,19 @@ def GetReadingsFromDescription(description):
   #  - ビル・建物
   # \xE3\x83\xBB : "・"
   return [RemoveTrailingNumber(token) for token
-          in re.split(r'(?:\(|\)|/|\xE3\x83\xBB)+', normalized)]
+          in re.split(br'(?:\(|\)|/|\xE3\x83\xBB)+', normalized)]
 
 
 def ReadEmojiTsv(stream):
   """Reads emoji data from stream and returns zero query data."""
   zero_query_dict = defaultdict(list)
   stream = code_generator_util.SkipLineComment(stream)
-  for columns in code_generator_util.ParseColumnStream(stream, delimiter='\t'):
+  for columns in code_generator_util.ParseColumnStream(stream, delimiter=b'\t'):
     if len(columns) != 13:
-      logging.critical('format error: %s', '\t'.join(columns))
+      logging.critical('format error: %s', b'\t'.join(columns))
       sys.exit(1)
 
-    code_points = columns[0].split(' ')
+    code_points = columns[0].split(b' ')
 
     # Emoji code point.
     emoji = columns[1]
@@ -114,12 +114,12 @@ def ReadEmojiTsv(stream):
       # - Composite emoji which has multiple code point.
       # NOTE: Some Unicode 6.0 emoji don't have PUA, and it is also omitted.
       # TODO(hsumita): Check the availability of such emoji and enable it.
-      logging.info('Skip %s', ' '.join(code_points))
+      logging.info('Skip %s', b' '.join(code_points))
       continue
 
     reading_list = []
     # \xe3\x80\x80 is a full-width space
-    for reading in re.split(r'(?: |\xe3\x80\x80)+', NormalizeString(readings)):
+    for reading in re.split(br'(?: |\xe3\x80\x80)+', NormalizeString(readings)):
       if not reading:
         continue
       reading_list.append(reading)
@@ -158,15 +158,15 @@ def ReadZeroQueryRuleData(input_stream):
   zero_query_dict = defaultdict(list)
 
   for line in input_stream:
-    if line.startswith('#'):
+    if line.startswith(b'#'):
       continue
-    line = line.rstrip('\r\n')
+    line = line.rstrip(b'\r\n')
     if not line:
       continue
 
-    tokens = line.split('\t')
+    tokens = line.split(b'\t')
     key = tokens[0]
-    values = tokens[1].split(',')
+    values = tokens[1].split(b',')
 
     for value in values:
       zero_query_dict[key].append(
@@ -179,16 +179,16 @@ def ReadEmoticonTsv(stream):
   """Reads emoticon data from stream and returns zero query data."""
   zero_query_dict = defaultdict(list)
   stream = code_generator_util.SkipLineComment(stream)
-  for columns in code_generator_util.ParseColumnStream(stream, delimiter='\t'):
+  for columns in code_generator_util.ParseColumnStream(stream, delimiter=b'\t'):
     if len(columns) != 3:
-      logging.critical('format error: %s', '\t'.join(columns))
+      logging.critical('format error: %s', b'\t'.join(columns))
       sys.exit(1)
 
     emoticon = columns[0]
     readings = columns[2]
 
     # \xe3\x80\x80 is a full-width space
-    for reading in re.split(r'(?: |\xe3\x80\x80)+', readings.strip()):
+    for reading in re.split(br'(?: |\xe3\x80\x80)+', readings.strip()):
       if not reading:
         continue
       zero_query_dict[reading].append(
@@ -202,9 +202,9 @@ def ReadSymbolTsv(stream):
   """Reads emoji data from stream and returns zero query data."""
   zero_query_dict = defaultdict(list)
   stream = code_generator_util.SkipLineComment(stream)
-  for columns in code_generator_util.ParseColumnStream(stream, delimiter='\t'):
+  for columns in code_generator_util.ParseColumnStream(stream, delimiter=b'\t'):
     if len(columns) < 3:
-      logging.warning('format error: %s', '\t'.join(columns))
+      logging.warning('format error: %s', b'\t'.join(columns))
       continue
 
     symbol = columns[1]
@@ -222,7 +222,7 @@ def ReadSymbolTsv(stream):
       continue
 
     # \xe3\x80\x80 is a full-width space
-    for reading in re.split(r'(?: |\xe3\x80\x80)+', readings.strip()):
+    for reading in re.split(br'(?: |\xe3\x80\x80)+', readings.strip()):
       if not reading:
         continue
       zero_query_dict[reading].append(
@@ -247,7 +247,7 @@ def ReadSymbolTsv(stream):
 
 def IsValidKeyForZeroQuery(key):
   """Returns if the key is valid for zero query trigger."""
-  is_ascii = all(ord(char) < 128 for char in key)
+  is_ascii = all(char < 128 for char in key)
   return not is_ascii
 
 
@@ -301,13 +301,13 @@ def ParseOptions():
 
 def main():
   options = ParseOptions()
-  with open(options.input_rule, 'r') as input_stream:
+  with open(options.input_rule, 'rb') as input_stream:
     zero_query_rule_dict = ReadZeroQueryRuleData(input_stream)
-  with open(options.input_symbol, 'r') as input_stream:
+  with open(options.input_symbol, 'rb') as input_stream:
     zero_query_symbol_dict = ReadSymbolTsv(input_stream)
-  with open(options.input_emoji, 'r') as input_stream:
+  with open(options.input_emoji, 'rb') as input_stream:
     zero_query_emoji_dict = ReadEmojiTsv(input_stream)
-  with open(options.input_emoticon, 'r') as input_stream:
+  with open(options.input_emoticon, 'rb') as input_stream:
     zero_query_emoticon_dict = ReadEmoticonTsv(input_stream)
 
   merged_zero_query_dict = MergeZeroQueryData(

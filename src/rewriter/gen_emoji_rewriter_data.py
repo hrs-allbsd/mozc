@@ -74,19 +74,19 @@ def ParseCodePoint(s):
   the glyph (in other words, it has alternative (primary) code point, which
   doesn't lead '>' and that's why we'll ignore it).
   """
-  if not s or s[0] == '>':
+  if not s or s[0:1] == b'>':
     return None
   return int(s, 16)
 
 
-_FULLWIDTH_RE = re.compile(ur'[！-～]')   # U+FF01 - U+FF5E
+_FULLWIDTH_RE = re.compile(r'[！-～]')   # U+FF01 - U+FF5E
 
 
 def NormalizeString(string):
   """Normalize full width ascii characters to half width characters."""
-  offset = ord(u'Ａ') - ord(u'A')
-  return _FULLWIDTH_RE.sub(lambda x: unichr(ord(x.group(0)) - offset),
-                           unicode(string, 'utf-8')).encode('utf-8')
+  offset = ord('Ａ') - ord('A')
+  return _FULLWIDTH_RE.sub(lambda x: chr(ord(x.group(0)) - offset),
+                           string.decode('utf-8')).encode('utf-8')
 
 
 def ReadEmojiTsv(stream):
@@ -96,14 +96,14 @@ def ReadEmojiTsv(stream):
   token_dict = defaultdict(list)
 
   stream = code_generator_util.SkipLineComment(stream)
-  for columns in code_generator_util.ParseColumnStream(stream, delimiter='\t'):
+  for columns in code_generator_util.ParseColumnStream(stream, delimiter=b'\t'):
     if len(columns) != 13:
-      logging.critical('format error: %s', '\t'.join(columns))
+      logging.critical('format error: %s', b'\t'.join(columns))
       sys.exit(1)
 
-    code_points = columns[0].split(' ')
+    code_points = columns[0].split(b' ')
     # Emoji code point.
-    emoji = columns[1] if columns[1] else ''
+    emoji = columns[1] if columns[1] else b''
     android_pua = ParseCodePoint(columns[2])
     docomo_pua = ParseCodePoint(columns[3])
     softbank_pua = ParseCodePoint(columns[4])
@@ -112,10 +112,10 @@ def ReadEmojiTsv(stream):
     readings = columns[6]
 
     # [7]: Name defined in Unicode.  It is ignored in current implementation.
-    utf8_description = columns[8] if columns[8] else ''
-    docomo_description = columns[9] if columns[9] else ''
-    softbank_description = columns[10] if columns[10] else ''
-    kddi_description = columns[11] if columns[11] else ''
+    utf8_description = columns[8] if columns[8] else b''
+    docomo_description = columns[9] if columns[9] else b''
+    softbank_description = columns[10] if columns[10] else b''
+    kddi_description = columns[11] if columns[11] else b''
 
     if not android_pua or len(code_points) > 1:
       # Skip some emoji, which is not supported on old devices.
@@ -123,7 +123,7 @@ def ReadEmojiTsv(stream):
       # - Composite emoji which has multiple code point.
       # NOTE: Some Unicode 6.0 emoji don't have PUA, and it is also omitted.
       # TODO(hsumita): Check the availability of such emoji and enable it.
-      logging.info('Skip %s', ' '.join(code_points))
+      logging.info('Skip %s', b' '.join(code_points))
       continue
 
     # Check consistency between carrier PUA codes and descriptions for Android
@@ -132,7 +132,7 @@ def ReadEmojiTsv(stream):
         (bool(softbank_pua) != bool(softbank_description)) or
         (bool(kddi_pua) != bool(kddi_description))):
       logging.warning('carrier PUA and description conflict: %s',
-                      '\t'.join(columns))
+                      b'\t'.join(columns))
       continue
 
     # Check if the character is usable on Android.
@@ -140,7 +140,7 @@ def ReadEmojiTsv(stream):
       android_pua = 0  # Replace None with 0.
 
     if not emoji and not android_pua:
-      logging.info('Skip: %s', '\t'.join(columns))
+      logging.info('Skip: %s', b'\t'.join(columns))
       continue
 
     index = len(emoji_data_list)
@@ -149,7 +149,7 @@ def ReadEmojiTsv(stream):
                             kddi_description))
 
     # \xe3\x80\x80 is a full-width space
-    for reading in re.split(r'(?: |\xe3\x80\x80)+', readings.strip()):
+    for reading in re.split(br'(?: |\xe3\x80\x80)+', readings.strip()):
       if reading:
         token_dict[NormalizeString(reading)].append(index)
 
@@ -159,7 +159,7 @@ def ReadEmojiTsv(stream):
 def OutputData(emoji_data_list, token_dict,
                token_array_file, string_array_file):
   """Output token and string arrays to files."""
-  sorted_token_dict = sorted(token_dict.iteritems())
+  sorted_token_dict = sorted(token_dict.items())
 
   strings = {}
   for reading, _ in sorted_token_dict:
@@ -171,7 +171,7 @@ def OutputData(emoji_data_list, token_dict,
     strings[docomo_description] = 0
     strings[softbank_description] = 0
     strings[kddi_description] = 0
-  sorted_strings = sorted(strings.iterkeys())
+  sorted_strings = sorted(strings.keys())
   for index, s in enumerate(sorted_strings):
     strings[s] = index
 
@@ -205,7 +205,7 @@ def ParseOptions():
 
 def main():
   options = ParseOptions()
-  with open(options.input, 'r') as input_stream:
+  with open(options.input, 'rb') as input_stream:
     (emoji_data_list, token_dict) = ReadEmojiTsv(input_stream)
 
   OutputData(emoji_data_list, token_dict,
