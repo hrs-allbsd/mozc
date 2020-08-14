@@ -83,7 +83,7 @@ class ZipEntry(object):
     address = unicodedata.normalize('NFKC', self.address)
     line = '\t'.join([zip_code, '0', '0', str(ZIP_CODE_COST),
                       address, ZIP_CODE_LABEL])
-    print(line.encode('utf-8'))
+    print(line)
 
 
 def ProcessZipCodeCSV(file_name):
@@ -121,7 +121,7 @@ def ParseTownName(level3):
     return ['']
 
   assert CanParseAddress(level3), ('failed to be merged %s'
-                                   % level3.encode('utf-8'))
+                                   % level3)
 
   # We ignore additional information here.
   level3 = re.sub('（.*）', '', level3, re.U)
